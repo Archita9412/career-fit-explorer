@@ -33,10 +33,10 @@ function Analyzer() {
         else { const b = new Uint8Array(await file.arrayBuffer()); let s = ""; b.forEach((x) => (s += String.fromCharCode(x))); payload = { ...payload, fileBase64: btoa(s), mediaType: "application/pdf" }; }
       }
       const r = await run({ data: payload });
-      if (r.error) setErr(r.error); else setReport(r.report);
+      if (r.error) setErr(r.error); else { setReport(r.report); setTimeout(() => document.getElementById("report")?.scrollIntoView({ behavior: "smooth" }), 50); }
     } catch (e) { setErr((e as Error).message); } finally { setBusy(false); }
   };
-  const ready = tab === "text" ? text.trim().length > 50 : !!file;
+  const ready = tab === "text" ? text.trim().length > 20 : !!file;
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
       <p className="text-sm text-muted-foreground">AI resume analyzer</p>
@@ -53,10 +53,11 @@ function Analyzer() {
         ) : <Textarea className="mt-4" rows={10} placeholder="Paste your resume text…" value={text} onChange={(e) => setText(e.target.value)} />}
         <Input className="mt-4" placeholder="Target role (optional)" value={role} onChange={(e) => setRole(e.target.value)} />
         <Button className="mt-4" disabled={!ready || busy} onClick={go}>{busy ? "Analyzing…" : "Analyze resume"}</Button>
+        {busy && <p className="mt-3 text-sm text-muted-foreground">Reading your resume — this usually takes 15–30 seconds…</p>}
         {err && <p className="mt-3 text-sm text-destructive">{err}</p>}
       </div>
       {report && (
-        <div className="mt-8 space-y-6">
+        <div id="report" className="mt-8 scroll-mt-20 space-y-6">
           <div className="rounded-xl border border-border bg-card p-6"><p className="text-5xl font-bold text-primary">{report.score}<span className="text-xl text-muted-foreground">/100</span></p><p className="mt-2">{report.verdict}</p></div>
           <div className="grid gap-4 md:grid-cols-2">{report.sections.map((s) => <div key={s.name} className="rounded-xl border border-border bg-card p-5"><div className="flex justify-between font-semibold"><span>{s.name}</span><span>{s.score}/10</span></div><Progress value={s.score * 10} className="mt-2 h-1.5" /><p className="mt-3 text-sm text-muted-foreground">{s.feedback}</p></div>)}</div>
           <div className="grid gap-4 md:grid-cols-2">
