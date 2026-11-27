@@ -11,7 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 type Mode = "login" | "signup" | "forgot";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): { mode?: Mode } => ({
+  validateSearch: (s: Record<string, unknown>): { mode?: Mode | undefined } => ({
     mode: s["mode"] === "signup" || s["mode"] === "forgot" ? (s["mode"] as Mode) : s["mode"] === "login" ? "login" : undefined,
   }),
   head: () => ({
