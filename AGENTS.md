@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Job listings live as static data in src/lib/jobs.ts; user data (profiles, saved_jobs, applications) is in Cloud tables read via the browser client under RLS — keeps the catalogue simple while per-user data persists.
+- AI calls go through src/lib/ai.server.ts (Lovable AI Gateway); chat/interview stream from /api/chat, resume analysis is a server function — keys stay server-side.

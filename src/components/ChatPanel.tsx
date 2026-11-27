@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 export function ChatPanel({ body, suggestions = [], onAssistantText, autoStart, placeholder = "Ask Nico…", extra }: {
   body?: Record<string, unknown>; suggestions?: string[]; onAssistantText?: (t: string) => void; autoStart?: string; placeholder?: string; extra?: (setInput: (s: string) => void) => React.ReactNode;
 }) {
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat", body }), [JSON.stringify(body)]);
+  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat", body: body ?? {} }), [JSON.stringify(body)]);
   const { messages, sendMessage, status, error } = useChat({ transport });
   const [input, setInput] = useState("");
   const end = useRef<HTMLDivElement>(null);
