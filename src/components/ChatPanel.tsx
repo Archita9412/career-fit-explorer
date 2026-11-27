@@ -33,8 +33,8 @@ export function ChatPanel({ body, suggestions = [], onAssistantText, autoStart, 
         {visible.map((m) => m.role === "user"
           ? <div key={m.id} className="ml-auto max-w-[80%] rounded-2xl bg-primary px-4 py-2 text-sm text-primary-foreground">{textOf(m)}</div>
           : <div key={m.id} className="prose prose-sm max-w-none text-sm leading-relaxed [&_li]:ml-4 [&_ol]:list-decimal [&_p]:my-2 [&_ul]:list-disc"><ReactMarkdown>{textOf(m)}</ReactMarkdown></div>)}
-        {status === "submitted" && <p className="text-sm text-muted-foreground">Nico is thinking…</p>}
-        {error && <p className="text-sm text-destructive">{error.message || "Something went wrong. Please try again."}</p>}
+        {busy && (status === "submitted" || !textOf(messages[messages.length - 1]!)) && <p className="text-sm text-muted-foreground">Nico is thinking…</p>}
+        {error && <p className="text-sm text-destructive">{(() => { try { return JSON.parse(error.message).error; } catch { return error.message || "Something went wrong. Please try again."; } })()}</p>}
         <div ref={end} />
       </div>
       <form className="flex items-end gap-2 border-t border-border p-3" onSubmit={(e) => { e.preventDefault(); send(input); }}>
